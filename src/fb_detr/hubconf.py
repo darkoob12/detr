@@ -1,11 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import torch
 
-from models.backbone import Backbone, Joiner
-from models.detr import DETR, PostProcess
-from models.position_encoding import PositionEmbeddingSine
-from models.segmentation import DETRsegm, PostProcessPanoptic
-from models.transformer import Transformer
+from fb_detr.models.backbone import Backbone, Joiner
+from fb_detr.models.detr import DETR, PostProcess
+from fb_detr.models.position_encoding import PositionEmbeddingSine
+from fb_detr.models.segmentation import DETRsegm, PostProcessPanoptic
+from fb_detr.models.transformer import Transformer
 
 dependencies = ["torch", "torchvision"]
 

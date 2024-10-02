@@ -10,11 +10,11 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, DistributedSampler
 
-import datasets
-import util.misc as utils
-from datasets import build_dataset, get_coco_api_from_dataset
-from engine import evaluate, train_one_epoch
-from models import build_model
+import fb_detr.datasets as datasets
+import fb_detr.util.misc as utils
+from fb_detr.datasets import build_dataset, get_coco_api_from_dataset
+from fb_detr.engine import evaluate, train_one_epoch
+from fb_detr.models import build_model
 
 
 def get_args_parser():
@@ -135,8 +135,7 @@ def main(args):
             "lr": args.lr_backbone,
         },
     ]
-    optimizer = torch.optim.AdamW(param_dicts, lr=args.lr,
-                                  weight_decay=args.weight_decay)
+    optimizer = torch.optim.AdamW(param_dicts, lr=args.lr, weight_decay=args.weight_decay)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, args.lr_drop)
 
     dataset_train = build_dataset(image_set='train', args=args)
@@ -149,8 +148,7 @@ def main(args):
         sampler_train = torch.utils.data.RandomSampler(dataset_train)
         sampler_val = torch.utils.data.SequentialSampler(dataset_val)
 
-    batch_sampler_train = torch.utils.data.BatchSampler(
-        sampler_train, args.batch_size, drop_last=True)
+    batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.batch_size, drop_last=True)
 
     data_loader_train = DataLoader(dataset_train, batch_sampler=batch_sampler_train,
                                    collate_fn=utils.collate_fn, num_workers=args.num_workers)
@@ -193,9 +191,8 @@ def main(args):
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             sampler_train.set_epoch(epoch)
-        train_stats = train_one_epoch(
-            model, criterion, data_loader_train, optimizer, device, epoch,
-            args.clip_max_norm)
+        train_stats = train_one_epoch(model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
+
         lr_scheduler.step()
         if args.output_dir:
             checkpoint_paths = [output_dir / 'checkpoint.pth']
@@ -211,9 +208,8 @@ def main(args):
                     'args': args,
                 }, checkpoint_path)
 
-        test_stats, coco_evaluator = evaluate(
-            model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
-        )
+        test_stats, coco_evaluator = evaluate(model, criterion, postprocessors, data_loader_val, base_ds, device,
+                                              args.output_dir)
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},

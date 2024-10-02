@@ -9,8 +9,8 @@ import torch
 import torchvision.transforms as T
 import torchvision.transforms.functional as F
 
-from util.box_ops import box_xyxy_to_cxcywh
-from util.misc import interpolate
+from fb_detr.util.box_ops import box_xyxy_to_cxcywh
+from fb_detr.util.misc import interpolate
 
 
 def crop(image, target, region):
@@ -214,6 +214,7 @@ class RandomSelect(object):
     Randomly selects between transforms1 and transforms2,
     with probability p for transforms1 and (1 - p) for transforms2
     """
+
     def __init__(self, transforms1, transforms2, p=0.5):
         self.transforms1 = transforms1
         self.transforms2 = transforms2

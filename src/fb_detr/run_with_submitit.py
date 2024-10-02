@@ -7,7 +7,7 @@ import os
 import uuid
 from pathlib import Path
 
-import main as detection
+import fb_detr.main as detection
 import submitit
 
 

@@ -11,7 +11,7 @@ import torch.utils.data
 import torchvision
 from pycocotools import mask as coco_mask
 
-import datasets.transforms as T
+import fb_detr.datasets.transforms as T
 
 
 class CocoDetection(torchvision.datasets.CocoDetection):
@@ -113,7 +113,6 @@ class ConvertCocoPolysToMask(object):
 
 
 def make_coco_transforms(image_set):
-
     normalize = T.Compose([
         T.ToTensor(),
         T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])

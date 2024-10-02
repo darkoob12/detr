@@ -15,15 +15,16 @@ from detectron2.modeling import META_ARCH_REGISTRY, build_backbone, detector_pos
 from detectron2.structures import Boxes, ImageList, Instances, BitMasks, PolygonMasks
 from detectron2.utils.logger import log_first_n
 from fvcore.nn import giou_loss, smooth_l1_loss
-from models.backbone import Joiner
-from models.detr import DETR, SetCriterion
-from models.matcher import HungarianMatcher
-from models.position_encoding import PositionEmbeddingSine
-from models.transformer import Transformer
-from models.segmentation import DETRsegm, PostProcessPanoptic, PostProcessSegm
-from util.box_ops import box_cxcywh_to_xyxy, box_xyxy_to_cxcywh
-from util.misc import NestedTensor
-from datasets.coco import convert_coco_poly_to_mask
+
+from fb_detr.models.backbone import Joiner
+from fb_detr.models.detr import DETR, SetCriterion
+from fb_detr.models.matcher import HungarianMatcher
+from fb_detr.models.position_encoding import PositionEmbeddingSine
+from fb_detr.models.transformer import Transformer
+from fb_detr.models.segmentation import DETRsegm, PostProcessPanoptic, PostProcessSegm
+from fb_detr.util.box_ops import box_cxcywh_to_xyxy, box_xyxy_to_cxcywh
+from fb_detr.util.misc import NestedTensor
+from fb_detr.datasets.coco import convert_coco_poly_to_mask
 
 __all__ = ["Detr"]
 
@@ -58,9 +59,9 @@ class MaskedBackbone(nn.Module):
             masks_per_feature_level = torch.ones((N, H, W), dtype=torch.bool, device=device)
             for img_idx, (h, w) in enumerate(image_sizes):
                 masks_per_feature_level[
-                    img_idx,
-                    : int(np.ceil(float(h) / self.feature_strides[idx])),
-                    : int(np.ceil(float(w) / self.feature_strides[idx])),
+                img_idx,
+                : int(np.ceil(float(h) / self.feature_strides[idx])),
+                : int(np.ceil(float(w) / self.feature_strides[idx])),
                 ] = 0
             masks.append(masks_per_feature_level)
         return masks
@@ -234,7 +235,7 @@ class Detr(nn.Module):
         scores, labels = F.softmax(box_cls, dim=-1)[:, :, :-1].max(-1)
 
         for i, (scores_per_image, labels_per_image, box_pred_per_image, image_size) in enumerate(zip(
-            scores, labels, box_pred, image_sizes
+                scores, labels, box_pred, image_sizes
         )):
             result = Instances(image_size)
             result.pred_boxes = Boxes(box_cxcywh_to_xyxy(box_pred_per_image))
