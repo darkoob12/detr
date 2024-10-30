@@ -48,8 +48,8 @@ setup(
                       'onnx',
                       'onnxruntime',
                       'pycocotools',
-                      'pycocotools@git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI&egg=pycocotools',
-                      'panopticapi@git+https://github.com/cocodataset/panopticapi.git#egg=panopticapi'
+                      # 'pycocotools@git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI&egg=pycocotools',
+                      # 'panopticapi@git+https://github.com/cocodataset/panopticapi.git#egg=panopticapi'
                       ]
     # ,
     # dependency_links=[
